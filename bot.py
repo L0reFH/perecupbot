@@ -1,5 +1,4 @@
 import json
-from turtle import down
 from telebot import TeleBot
 import vk
 import random
