@@ -82,6 +82,7 @@ def request_post_photo(message):
         post_text = message.text
         if message.text.lower() == "отмена":
             tb.send_message(user_id, 'Отменяю')
+            return
 
         send = tb.send_message(user_id, "Пришли фотографию подиков")
         tb.register_next_step_handler(send, create_post)
