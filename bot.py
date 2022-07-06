@@ -37,35 +37,33 @@ groups = [
     -91335741,
     -156878704]
 
-
 class AuthException(Exception):
     pass
-
-token = "5437580922:AAHhmA0rl2qr_A-SY2Fi-mXYWeU7_0qwOYo"
-user_id = 5388239974 # мой id
-# user_id = 1770636752 # id заказчика
 
 def vk_auth():
     i = 0
     global password
     global phone
     global vk_session
+    global user_id
+    global token
 
-    while True:
-        try:
-            phone = int(input("Введите номер телефона: "))
-            break
-        except:
-            continue
-    password = input("Введите пароль от аккаунта вк: ")
+    with open("config.cfg", "r") as config:
+        data = config.readlines()[0].split(",")
+        phone = data[0]
+        password = data[1]
+        user_id = data[2]
+        token = data[3].replace("\n", "")
+
+        print(data)
 
     vk_session = vk.UserAPI(user_login=phone, user_password=password, scope="wall, photos, friends, groups", v="5.131", client_id=8203325)
+
     print("Бот успешно запущен!")
     print("Иди клепай свои объявления, шизик")
 
 
 vk_auth()
-
 
 tb = TeleBot(token)
 @tb.message_handler(commands=["пост"])
@@ -146,6 +144,10 @@ def send_post(message):
 
                 tb.send_message(user_id, "Работа окончена")
                 return
+        else:
+            send = tb.send_message(user_id, "Если нужно переделать пост, пиши 'ред', если пост готов и его нужно запостить, пиши 'пост'")
+            tb.register_next_step_handler(send, send_post)   
+
     else:
         send = tb.send_message(user_id, "Если нужно переделать пост, пиши 'ред', если пост готов и его нужно запостить, пиши 'пост'")
         tb.register_next_step_handler(send, send_post)
