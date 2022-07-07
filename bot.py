@@ -48,14 +48,13 @@ def vk_auth():
     global user_id
     global token
 
+
     with open("config.cfg", "r") as config:
         data = config.readlines()[0].split(",")
         phone = data[0]
         password = data[1]
         user_id = data[2]
         token = data[3].replace("\n", "")
-
-        print(data)
 
     vk_session = vk.UserAPI(user_login=phone, user_password=password, scope="wall, photos, friends, groups", v="5.131", client_id=8203325)
 
@@ -125,7 +124,6 @@ def send_post(message):
             # загрузка фото на сервер 
             with open("img_0.jpg", "rb") as file:
                 resp = requests.post(f"{up_url}", files={"file": file})
-                print(resp.json())
                 saveWallPhoto = vk_session.photos.saveWallPhoto(server=resp.json()["server"], photo=resp.json()["photo"], hash=resp.json()["hash"])
                 attachments = []
                 attachments.append("photo{}_{}".format(saveWallPhoto[0]["owner_id"], saveWallPhoto[0]["id"]))
@@ -138,8 +136,7 @@ def send_post(message):
                         time.sleep(1)
                         
 
-                    except Exception as e:
-                        print(e)
+                    except:
                         tb.send_message(user_id, f"Неудачный пост в группу: https://vk.com/club{group*-1}")
                         continue
 
